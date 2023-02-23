@@ -117,7 +117,7 @@ class CenterOfMass:
         # write your own code below
         r_COM = np.sqrt(x_COM**2 + y_COM**2 + z_COM**2)
         
-        print('r_com', r_COM)
+  
 
 
         # iterative process to determine the center of mass                                                            
@@ -161,7 +161,7 @@ class CenterOfMass:
             # write your own code below
             r_COM2 = np.sqrt(x_COM2**2 + y_COM2**2 + z_COM2**2)
             
-            print('r com: ', r_COM2)
+           
 
             # determine the difference between the previous center of mass position                                    
             # and the new one.                                                                                         
@@ -256,103 +256,4 @@ class CenterOfMass:
      
     
 
-
-# In[6]:
-
-
-# Create a Center of mass object for the MW, M31 and M33
-# below is an example of using the class for MW
-MW_COM = CenterOfMass("MW_000.py", 2)
-
-
-# In[7]:
-
-
-# below gives you an example of calling the class's functions
-# MW:   store the position and velocity COM
-MW_COM_p = MW_COM.COM_P(0.1)
-print(MW_COM_p)
-MW_COM_v = MW_COM.COM_V(MW_COM_p[0], MW_COM_p[1], MW_COM_p[2])
-print(MW_COM_v)
-
-
-# In[8]:
-
-
-M31_COM = CenterOfMass("M31_000.py", 2)
-M31_COM_p = M31_COM.COM_P(0.1)
-print(M31_COM_p)
-M31_COM_v = M31_COM.COM_V(M31_COM_p[0], M31_COM_p[1], M31_COM_p[2])
-print(M31_COM_v)
-
-
-# In[9]:
-
-
-M33_COM = CenterOfMass("M33_000.py", 2)
-M33_COM_p = M33_COM.COM_P(0.1)
-print(M33_COM_p)
-M33_COM_v = M33_COM.COM_V(M33_COM_p[0], M33_COM_p[1], M33_COM_p[2])
-print(M33_COM_v)
-
-
-# In[12]:
-
-
-# Making a Table of Results
-
-# we first gather all results and put them into a numpy array
-# *tuple() will extract the tuple, kind of like C-language
-tab_results = ['MW COM', *tuple(MW_COM_p.value), *tuple(MW_COM_v.value), 
-               'M31 COM', *tuple(M31_COM_p.value), *tuple(M31_COM_v.value), 
-               'M33 COM', *tuple(M33_COM_p.value), *tuple(M33_COM_v.value)]
-tab_results = np.reshape(tab_results, (3, 7)) # convert 1D array to 2D
-
-# make and display the table with astropy
-t = tbl.Table(tab_results, 
-              names = ['Galaxy', 'X-component (kpc)', 'Y-Component (kpc)', 
-                       'Z-Component (kpc)','VX-component (km/s)', 
-                       'VY-Component (km/s)', 'VZ-Component (km/s)'])
-t.show_in_notebook()
-
-
-# In[10]:
-
-
-#What is the magnitude of the current separation (in kpc) and velocity (in km/s) between the MW and M31? 
-#Round your answers to three decimal places. 
-
-print('MW COM Position',MW_COM_p)
-print('MW COM Position',M31_COM_p)
-
-sep_p = np.sqrt((M31_COM_p[0]-MW_COM_p[0])**2 + (M31_COM_p[1]-MW_COM_p[1])**2 + (M31_COM_p[2]-MW_COM_p[2])**2)
-print('separation:',np.round(sep_p, 3))
-
-sep_v = np.sqrt((M31_COM_v[0]-MW_COM_v[0])**2 + (M31_COM_v[1]-MW_COM_v[1])**2 + (M31_COM_v[2]-MW_COM_v[2])**2)
-print('velocity separation:',np.round(sep_v, 3))
-
-
-# In[11]:
-
-
-#What is the magnitude of the current separation (in kpc) and velocity (in km/s) between M33 and M31? 
-#Round your answers to three decimal places.
-print(M31_COM_p)
-print(M33_COM_p)
-
-sep_p = np.sqrt((M31_COM_p[0]-M33_COM_p[0])**2 + (M31_COM_p[1]-M33_COM_p[1])**2 + (M31_COM_p[2]-M33_COM_p[2])**2)
-print('separation:',np.round(sep_p, 3))
-
-sep_v = np.sqrt((M31_COM_v[0]-M33_COM_v[0])**2 + (M31_COM_v[1]-M33_COM_v[1])**2 + (M31_COM_v[2]-M33_COM_v[2])**2)
-print('velocity separation:',np.round(sep_v, 3))
-
-
-# In[ ]:
-
-
-#Given that M31 and the MW are about to merge, why is the iterative process to determine the COM is important?
-
-#The interative process to determine the COM is important because as time increases and M31 and the Milky Way 
-# get closer and closer, then the Center of Mass will change extremely rapidly. Using the iterative process will 
-# ensure that the true COM is calculated. 
 
