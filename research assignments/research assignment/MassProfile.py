@@ -11,7 +11,7 @@ import astropy.table as tbl
 import matplotlib.pyplot as plt
 
 from ReadFile import Read
-from CenterOfMass import CenterOfMass
+from CenterOfMass2 import CenterOfMass
 from astropy.constants import G
 
 
@@ -54,7 +54,7 @@ class MassProfile:
         #set the galaxy name as a global property
         self.gname = galaxy
         
-    def MassEnclosed(self, ptype, radii):
+    def MassEnclosed(self, ptype, radii, volDec):
         '''
         this function will compute the enclosed mass 
         for a given radius of the COM position for a particular galaxy's component.
@@ -71,6 +71,9 @@ class MassProfile:
                 in units of M_sun 
 
         '''
+        volDec = 2.0 #for MW and M31
+        if galaxy == "M33":
+            volDec = 4 #for M33
         #creating the CenterOfMass objects and calling previously defined COM_P
         COM = CenterOfMass(self.filename, ptype)
         COM_p = COM.COM_P(0.1)
