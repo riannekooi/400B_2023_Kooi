@@ -196,8 +196,7 @@ class CenterOfMass:
         # set the correct units using astropy and round all values
         # and then return the COM positon vector
         # write your own code below
-        self.r_com = np.sqrt(p_COM[0]**2 + p_COM[1]**2 + p_COM[2]**2)
-        return np.round(p_COM*u.kpc, 2)
+        return np.around(p_COM*u.kpc, 2)
         
         
     def COM_V(self, x_COM, y_COM, z_COM):
