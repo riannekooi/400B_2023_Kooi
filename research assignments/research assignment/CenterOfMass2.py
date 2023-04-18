@@ -100,12 +100,9 @@ class CenterOfMass:
         p_COM : `np.ndarray of astropy.Quantity'
             3-D position of the center of mass in kpc
         '''                                                                     
-
         # Center of Mass Position                                                                                      
         ########################### 
-        volDec = 2.0 #for MW and M31
-        if galaxy == "M33":
-            volDec = 4 #for M33
+
             
         # Try a first guess at the COM position by calling COMdefine                                                   
         x_COM, y_COM, z_COM = self.COMdefine(self.x, self.y, self.z, self.m)
@@ -145,6 +142,7 @@ class CenterOfMass:
             y2 = self.y[index2]
             z2 = self.z[index2]
             m2 = self.m[index2]
+            
           
 
             # Refined COM position:                                                                                    
@@ -152,7 +150,7 @@ class CenterOfMass:
             # the particles in the reduced radius
             # write your own code below
             x_COM2, y_COM2, z_COM2 = self.COMdefine(x2,y2,z2,m2)
-            
+            print(x_COM2, y_COM2, z_COM2)
             # compute the new 3D COM position
             # write your own code below
             r_COM2 = np.sqrt(x_COM2**2 + y_COM2**2 + z_COM2**2) 
