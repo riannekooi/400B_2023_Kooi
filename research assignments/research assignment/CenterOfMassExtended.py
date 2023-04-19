@@ -19,7 +19,7 @@ class CenterOfMass:
 # Class to define COM position and velocity properties of a given galaxy 
 # and simulation snapshot
 
-    def __init__(self, filename, ptype):
+    def __init__(self, filename1, filename2, ptype):
         ''' Class to calculate the 6-D phase-space position of a galaxy's center of mass using
         a specified particle type. 
             
@@ -30,23 +30,26 @@ class CenterOfMass:
             ptype : `int; 1, 2, or 3`
                 particle type to use for COM calculations
         '''
-     
+        
         # read data in the given file using Read
-        self.time, self.total, self.data = Read(filename)                                                                                             
+        self.time1, self.total1, self.data1 = Read(filename1)
+        self.time2, self.total2, self.data2 = Read(filename2)
+        
 
         #create an array to store indexes of particles of desired Ptype                                
-        self.index = np.where(self.data['type'] == ptype)
+        self.index1 = np.where(self.data1['type'] == ptype
+        self.index2 = np.where(self.data2['type'] == ptype
 
         # store the mass, positions, velocities of only the particles of the given type
         # the following only gives the example of storing the mass
-        self.m = self.data['m'][self.index]
+        self.m = np.append(self.data1['m'][self.index], self.data2['m'][self.index])
         # write your own code to complete this for positions and velocities
-        self.x = self.data['x'][self.index]
-        self.y = self.data['y'][self.index]
-        self.z = self.data['z'][self.index]
-        self.vx = self.data['vx'][self.index]
-        self.vy = self.data['vy'][self.index]
-        self.vz = self.data['vz'][self.index]
+        self.x = np.append(self.data1['x'][self.index], self.data2['x'][self.index])
+        self.y = np.append(self.data1['y'][self.index], self.data2['y'][self.index])
+        self.z = np.append(self.data1['z'][self.index], self.data2['z'][self.index])
+        self.vx = np.append(self.data1['vx'][self.index], self.data2['vx'][self.index])
+        self.vy = np.append(self.data1['vy'][self.index], self.data2['vx'][self.index])
+        self.vz = np.append(self.data1['vz'][self.index], self.data2['vz'][self.index])
 
 
     def COMdefine(self,a,b,c,m):

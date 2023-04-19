@@ -238,6 +238,48 @@ class MassProfile:
         
         return Vcirc
     
+    def DensityEnclosed(self, ptype, radii, volDec):
+        '''
+        this function will compute the enclosed density 
+        for a given radius of the COM position for M31 and MW
+
+        inputs:
+            ptype:
+                the particle type to use for COM calculations (1, 2, 3)
+            radii: 
+                an array of radii in magnitude
+
+        outputs: 
+            density_enclosed: 
+                an array of enclosed density at each particular radius specified 
+
+        '''
+        #creating the CenterOfMass objects and calling previously defined COM_P
+        COM = CenterOfMass(self.filename1,self.filename2, 2)
+        COM_p = COM.COM_P(0.1,volDec=2.0)
+        print(COM_p)
+        
+        
+        index = np.where(self.data['type'] == ptype)
+        
+        #loop over the radius array to define particles that are enclosed within the radius given
+        
+        self.m_new = self.m[index]
+        
+        masses_enclosed = np.zeros(len(radii))
+        for i in range(len(radii)):
+            
+            distance_magnitude = np.sqrt((self.x[index]-COM_p[0])**2 
+                                         +(self.y[index]-COM_p[1])**2 
+                                         +(self.z[index]-COM_p[2])**2)
+            
+            enclosed_index = np.where(distance_magnitude/u.kpc > radii[i] & distance_magnitude/u.kpc <= radii[i+1]) 
+            
+            #storing the sum of masses of the particles within the particular radius
+            density_enclosed[i]= sum(self.m_new[enclosed_index])/(4*np.pi)/3 * ((radii[i+1])**3 - (radii[i])**3)
+            
+        return density_enclosed * 1e10 *u.Msun
+    
 
 
 
