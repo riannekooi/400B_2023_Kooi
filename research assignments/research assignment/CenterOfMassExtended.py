@@ -37,19 +37,19 @@ class CenterOfMass:
         
 
         #create an array to store indexes of particles of desired Ptype                                
-        self.index1 = np.where(self.data1['type'] == ptype
-        self.index2 = np.where(self.data2['type'] == ptype
+        self.index1 = np.where(self.data1['type'] == ptype)
+        self.index2 = np.where(self.data2['type'] == ptype)
 
         # store the mass, positions, velocities of only the particles of the given type
         # the following only gives the example of storing the mass
-        self.m = np.append(self.data1['m'][self.index], self.data2['m'][self.index])
+        self.m = np.append(self.data1['m'][self.index1], self.data2['m'][self.index2])
         # write your own code to complete this for positions and velocities
-        self.x = np.append(self.data1['x'][self.index], self.data2['x'][self.index])
-        self.y = np.append(self.data1['y'][self.index], self.data2['y'][self.index])
-        self.z = np.append(self.data1['z'][self.index], self.data2['z'][self.index])
-        self.vx = np.append(self.data1['vx'][self.index], self.data2['vx'][self.index])
-        self.vy = np.append(self.data1['vy'][self.index], self.data2['vx'][self.index])
-        self.vz = np.append(self.data1['vz'][self.index], self.data2['vz'][self.index])
+        self.x = np.append(self.data1['x'][self.index1], self.data2['x'][self.index2])
+        self.y = np.append(self.data1['y'][self.index1], self.data2['y'][self.index2])
+        self.z = np.append(self.data1['z'][self.index1], self.data2['z'][self.index2])
+        self.vx = np.append(self.data1['vx'][self.index1], self.data2['vx'][self.index2])
+        self.vy = np.append(self.data1['vy'][self.index1], self.data2['vx'][self.index2])
+        self.vz = np.append(self.data1['vz'][self.index1], self.data2['vz'][self.index2])
 
 
     def COMdefine(self,a,b,c,m):
@@ -112,6 +112,7 @@ class CenterOfMass:
         # compute the magnitude of the COM position vector.
         # write your own code below
         r_COM = np.sqrt(x_COM**2 + y_COM**2 + z_COM**2)
+        
 
 
         # iterative process to determine the center of mass                                                            
@@ -121,13 +122,17 @@ class CenterOfMass:
         # and the first guess at COM position
         # write your own code below
         x_new = self.x - x_COM
+        
         y_new = self.y - y_COM
         z_new = self.z - z_COM
         r_new = np.sqrt(x_new**2.0 + y_new**2.0 +z_new**2.0)
+       
+        
 
         # find the max 3D distance of all particles from the guessed COM                                               
         # HOWEWORK 6: will re-start at a reduced radius specified by input volDec
-        r_max = max(r_new)/volDec
+        r_max = max((r_new)/volDec)
+       
         
         # pick an initial value for the change in COM position                                                      
         # between the first guess above and the new one computed from half that volume
@@ -153,7 +158,7 @@ class CenterOfMass:
             # the particles in the reduced radius
             # write your own code below
             x_COM2, y_COM2, z_COM2 = self.COMdefine(x2,y2,z2,m2)
-            print(x_COM2, y_COM2, z_COM2)
+            
             # compute the new 3D COM position
             # write your own code below
             r_COM2 = np.sqrt(x_COM2**2 + y_COM2**2 + z_COM2**2) 

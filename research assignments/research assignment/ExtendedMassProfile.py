@@ -11,7 +11,7 @@ import astropy.table as tbl
 import matplotlib.pyplot as plt
 
 from ReadFile import Read
-from CenterOfMass2 import CenterOfMass
+from CenterOfMassExtended import CenterOfMass
 from astropy.constants import G
 
 
@@ -58,7 +58,8 @@ class MassProfile:
         self.vy = np.append(self.data1['vy'], self.data2['vy'])*u.km/u.s
         self.vz = np.append(self.data1['vz'], self.data2['vz'])*u.km/u.s
         self.m = np.append(self.data1['m'],self.data2['m'])
-        
+        self.ptype = np.append(self.data1['type'], self.data2['type'])
+                              
         #set the galaxy name as a global property
         self.gname1 = galaxy1
         self.gname2 = galaxy2
@@ -83,7 +84,7 @@ class MassProfile:
         #creating the CenterOfMass objects and calling previously defined COM_P
         COM = CenterOfMass(self.filename, 2)
         COM_p = COM.COM_P(0.1,volDec=2.0)
-        print(COM_p)
+        
         
         
         index = np.where(self.data['type'] == ptype)
@@ -234,7 +235,7 @@ class MassProfile:
         
         Vcirc = np.round(np.sqrt(G*Mass_Hern/(radius*u.kpc)), 2) #round and add units
         
-        print(Vcirc)
+        
         
         return Vcirc
     
@@ -257,10 +258,9 @@ class MassProfile:
         #creating the CenterOfMass objects and calling previously defined COM_P
         COM = CenterOfMass(self.filename1,self.filename2, 2)
         COM_p = COM.COM_P(0.1,volDec=2.0)
-        print(COM_p)
         
-        
-        index = np.where(self.data['type'] == ptype)
+       
+        index = np.where(self.ptype == ptype)
         
         #loop over the radius array to define particles that are enclosed within the radius given
         
@@ -268,17 +268,30 @@ class MassProfile:
         
         masses_enclosed = np.zeros(len(radii))
         for i in range(len(radii)):
-            
             distance_magnitude = np.sqrt((self.x[index]-COM_p[0])**2 
                                          +(self.y[index]-COM_p[1])**2 
                                          +(self.z[index]-COM_p[2])**2)
-            
-            enclosed_index = np.where(distance_magnitude/u.kpc > radii[i] & distance_magnitude/u.kpc <= radii[i+1]) 
+            enclosed_index = np.where(distance_magnitude/u.kpc > radii[i] ) & (distance_magnitude/u.kpc <= radii[i+1])
             
             #storing the sum of masses of the particles within the particular radius
             density_enclosed[i]= sum(self.m_new[enclosed_index])/(4*np.pi)/3 * ((radii[i+1])**3 - (radii[i])**3)
             
-        return density_enclosed * 1e10 *u.Msun
+        return density_enclosed 
+    
+    def HernquistDensity(self, radii, a, M_tot):
+        '''
+        computes the density enclosed within a particular radius
+        inputs: 
+        radii: 'array'
+        an array of radii values
+        
+        a: 'float'
+            hernquist scale factor
+        M_tot: #look at the numbers from HW3 and add together 
+        '''
+        rho =  (M_tot/2*np.pi)*(a/radii)*(1/(radii+a)**3) #hernquist density equation                
+        
+        return rho
     
 
 
