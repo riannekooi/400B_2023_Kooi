@@ -58,7 +58,7 @@ class MassProfile:
         self.vy = np.append(self.data1['vy'], self.data2['vy'])*u.km/u.s
         self.vz = np.append(self.data1['vz'], self.data2['vz'])*u.km/u.s
         self.m = np.append(self.data1['m'],self.data2['m'])
-        self.ptype = np.append(self.data1['type'], self.data2['type'])
+        self.part_type = np.append(self.data1['type'], self.data2['type'])
                               
         #set the galaxy name as a global property
         self.gname1 = galaxy1
@@ -87,7 +87,7 @@ class MassProfile:
         
         
         
-        index = np.where(self.data['type'] == ptype)
+        index = np.where(self.part_type == ptype)
         
         #loop over the radius array to define particles that are enclosed within the radius given
         
@@ -106,6 +106,7 @@ class MassProfile:
             masses_enclosed[i]= sum(self.m_new[enclosed_index])
             
         return masses_enclosed * 1e10 *u.Msun
+    
     
     def MassEnclosedTotal(self, radii):
         ''' this calculates the total enclosed mass from each particle type
@@ -180,7 +181,7 @@ class MassProfile:
         # applying circular speed formula
         Vcirc = np.round(np.sqrt(G*M_enclosed/(radii*u.kpc)), 2)
         
-        #print(Vcirc)
+        
         
         return Vcirc
     
@@ -234,9 +235,7 @@ class MassProfile:
         Mass_Hern = self.HernquistMass(radius,a,M_halo) # calculating the hernquist mass
         
         Vcirc = np.round(np.sqrt(G*Mass_Hern/(radius*u.kpc)), 2) #round and add units
-        
-        
-        
+       
         return Vcirc
     
     def DensityEnclosed(self, ptype, radii, volDec):
@@ -253,44 +252,36 @@ class MassProfile:
         outputs: 
             density_enclosed: 
                 an array of enclosed density at each particular radius specified 
-
-        '''
+                '''
+        
         #creating the CenterOfMass objects and calling previously defined COM_P
         COM = CenterOfMass(self.filename1,self.filename2, 2)
         COM_p = COM.COM_P(0.1,volDec=2.0)
-        
        
-        index = np.where(self.ptype == ptype)
-        
+        index = np.where(self.part_type == ptype)
+        density_enclosed = np.zeros(len(radii)-1)
         #loop over the radius array to define particles that are enclosed within the radius given
-        
         self.m_new = self.m[index]
+        distance_magnitude = np.sqrt((self.x[index]-COM_p[0])**2 +(self.y[index]-COM_p[1])**2 +(self.z[index]-COM_p[2])**2)
+        for i in range(len(density_enclosed)):
+            enclosed_index = np.where((distance_magnitude/u.kpc > radii[i]) & (distance_magnitude/u.kpc <= radii[i+1]))
+            
+            density_enclosed[i] = np.sum(self.m_new[enclosed_index])/(((4*np.pi)/3)*((radii[i+1])**3 -(radii[i])**3))
         
-        masses_enclosed = np.zeros(len(radii))
-        for i in range(len(radii)):
-            distance_magnitude = np.sqrt((self.x[index]-COM_p[0])**2 
-                                         +(self.y[index]-COM_p[1])**2 
-                                         +(self.z[index]-COM_p[2])**2)
-            enclosed_index = np.where(distance_magnitude/u.kpc > radii[i] ) & (distance_magnitude/u.kpc <= radii[i+1])
-            
-            #storing the sum of masses of the particles within the particular radius
-            density_enclosed[i]= sum(self.m_new[enclosed_index])/(4*np.pi)/3 * ((radii[i+1])**3 - (radii[i])**3)
-            
-        return density_enclosed 
-    
+        return density_enclosed * 1e10*u.Msun
+        
     def HernquistDensity(self, radii, a, M_tot):
         '''
         computes the density enclosed within a particular radius
         inputs: 
         radii: 'array'
         an array of radii values
-        
+            
         a: 'float'
-            hernquist scale factor
+        hernquist scale factor
         M_tot: #look at the numbers from HW3 and add together 
         '''
-        rho =  (M_tot/2*np.pi)*(a/radii)*(1/(radii+a)**3) #hernquist density equation                
-        
+        rho =  (M_tot/2*np.pi)*(a/radii)*(1/(radii+a)**3) #hernquist density equation              
         return rho
     
 
