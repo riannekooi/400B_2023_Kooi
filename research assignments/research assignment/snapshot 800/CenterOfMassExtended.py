@@ -14,7 +14,6 @@ import astropy.table as tbl
 
 from ReadFile import Read
 
-
 class CenterOfMass:
 # Class to define COM position and velocity properties of a given galaxy 
 # and simulation snapshot
